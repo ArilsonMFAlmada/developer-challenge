@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import java.util.List;
-import java.util.UUID;
+
 
 @Service
 @AllArgsConstructor
@@ -44,11 +44,7 @@ public class TemplateService {
                 .block();
         if (templateMessages.size() == 5)
             return Mono.just(new TemplateResponse("42"));
-
-        TemplateResponse templateResponse = new TemplateResponse();
-        templateResponse.setTemplateField(templateRequest.getTemplateField());
-
-        return Mono.just(templateResponse);
+        return Mono.just(templateRequest.ToResponseDocument());
     }
 
     public Mono<TemplateDocument> getStuff(String templatePathVariable) {
@@ -71,7 +67,7 @@ public class TemplateService {
     public void saveToDatabase(TemplateRequest templateRequest) {
         log.info("Saving the message to the database.");
         this.templateRepository
-                .save(new TemplateDocument(UUID.randomUUID(), templateRequest.getTemplateField()))
+                .save(templateRequest.toTemplateDocument())
                 .subscribe(result -> log.info(String.valueOf(result)));
     }
 }

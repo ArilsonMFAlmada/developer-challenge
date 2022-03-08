@@ -9,4 +9,6 @@ import org.springframework.integration.annotation.IntegrationComponentScan;
 @IntegrationComponentScan
 public class TemplateConfig {
 
+
+
 }

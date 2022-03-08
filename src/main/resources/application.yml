@@ -17,7 +17,9 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      database: TEMPLATE
+      database: overledger
+      username: admin
+      password: password
 # By default, rabbitMQ uses a topic exchange. To send messages to multiple consumers, use a 'fanout' exchange.
   rabbitmq:
     host: localhost

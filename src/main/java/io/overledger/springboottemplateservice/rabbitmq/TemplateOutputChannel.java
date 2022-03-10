@@ -9,5 +9,5 @@ public interface TemplateOutputChannel {
 
     // To use as an input channel together with the TemplateChannelHandler, use the @Input annotation instead of @Output.
     @Output(TemplateOutputChannel.CHANNEL_NAME)
-    MessageChannel templateChannel();
+    public MessageChannel templateChannel();
 }

@@ -5,21 +5,32 @@ import io.overledger.springboottemplateservice.dto.TemplateResponse;
 import io.overledger.springboottemplateservice.exceptions.TemplateException;
 import io.overledger.springboottemplateservice.mongodb.TemplateDocument;
 import io.overledger.springboottemplateservice.mongodb.TemplateRepository;
+import io.overledger.springboottemplateservice.rabbitmq.TemplateOutputChannel;
 import io.overledger.springboottemplateservice.rabbitmq.TemplatePublishGateway;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.integration.annotation.InboundChannelAdapter;
+import org.springframework.integration.annotation.Poller;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import java.util.List;
 
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class TemplateService {
 
     TemplateRepository templateRepository;
     TemplatePublishGateway templatePublishGateway;
+    TemplateOutputChannel templateOutputChannel;
+
+    public TemplateService(TemplateRepository templateRepository, TemplatePublishGateway templatePublishGateway, TemplateOutputChannel templateOutputChannel) {
+        this.templateRepository = templateRepository;
+        this.templatePublishGateway = templatePublishGateway;
+        this.templateOutputChannel = templateOutputChannel;
+    }
 
     public Mono<TemplateResponse> postStuff(TemplateRequest templateRequest) {
         log.info(String.format("Validating request: %s.", templateRequest.toString()));
@@ -36,7 +47,7 @@ public class TemplateService {
 
         // Saves to the database. Comment this out if you want to test the Consumer functionality, as the TemplateChannelHandler
         // is used to save to the database.
-        saveToDatabase(templateRequest);
+        // saveToDatabase(templateRequest);
 
         List<TemplateDocument> templateMessages = this.templateRepository
                 .findAllByTemplateField(templateRequest.getTemplateField())
